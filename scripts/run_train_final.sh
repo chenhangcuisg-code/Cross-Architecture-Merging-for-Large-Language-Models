@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Hugging Face download configuration: increased timeout and retry counts
-export HF_ENDPOINT=${HF_ENDPOINT:-https://hf-mirror.com}
 export HF_HUB_DOWNLOAD_TIMEOUT=30
 export HF_HUB_ETAG_TIMEOUT=30
 export HF_HUB_DOWNLOAD_RETRIES=10
@@ -78,18 +77,59 @@ TRAIN_LAUNCH=${TRAIN_LAUNCH:-torchrun}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EVAL_RESULTS_LOG="${SCRIPT_DIR}/eval_results_summary_merged_final.log"
 
+#############################################################
+#                 Workspace Root Paths Configuration
+#############################################################
+# These paths can be set via environment variables or will use defaults
+# Default WORKSPACE_ROOT is the parent directory of the scripts directory
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
+MODELS_ROOT="${MODELS_ROOT:-${WORKSPACE_ROOT}/models}"
+HOT_RESULTS_ROOT="${HOT_RESULTS_ROOT:-${WORKSPACE_ROOT}/transport_results}"
+
 # Ablation evaluation configuration (unified general benchmark)
 ABLATION_EVAL_TASKS="winogrande,social_iqa,arc_easy,piqa,commonsense_qa"
 # ABLATION_EVAL_OUT_ROOT will be dynamically set in STEP 3 based on timestamp
 ABLATION_EVAL_BATCH_SIZE=8
 
-# lm-eval harness repository path
-LM_EVAL_REPO="/data/chenhang/codes/lm-evaluation-harness"
+#############################################################
+#                 Evaluation Library Configuration
+#############################################################
+# This script uses three evaluation libraries:
+#
+# 1. lm-evaluation-harness (for most tasks)
+#    Repository: https://github.com/EleutherAI/lm-evaluation-harness
+#    Used for: Medical, Thai, Finance, Indonesian tasks
+#    Installation: Follow the repository README
+#
+# 2. MalayMMLU (for Malay language evaluation)
+#    Repository: https://github.com/UMxYTL-AI-Labs/MalayMMLU
+#    Used for: Malay task evaluation
+#    Installation: Clone the repository and follow its setup instructions
+#
+# 3. Yue-Benchmark (for Cantonese evaluation)
+#    Repository: https://github.com/jiangjyjy/Yue-Benchmark
+#    Used for: Cantonese (CMMLU) task evaluation
+#    Installation: Clone the repository and follow its setup instructions
+#
+# Set these paths via environment variables or modify the defaults below:
+#############################################################
+
+# lm-evaluation-harness repository path
+# Default: assumes repository is cloned at WORKSPACE_ROOT/lm-evaluation-harness
+# Override with: LM_EVAL_REPO=/path/to/lm-evaluation-harness
+LM_EVAL_REPO="${LM_EVAL_REPO:-${WORKSPACE_ROOT}/lm-evaluation-harness}"
 LM_EVAL_OUTPUT_DIR="${LM_EVAL_REPO}/output_nolora_${RUN_LABEL}"
 
 # MalayMMLU repository path
-MALAY_REPO="/home/chenhang/MalayMMLU"
+# Default: assumes repository is cloned at WORKSPACE_ROOT/MalayMMLU
+# Override with: MALAY_REPO=/path/to/MalayMMLU
+MALAY_REPO="${MALAY_REPO:-${WORKSPACE_ROOT}/MalayMMLU}"
 MALAY_OUTPUT_DIR="${MALAY_REPO}/output"
+
+# Yue-Benchmark repository path (for Cantonese evaluation)
+# Default: assumes repository is cloned at WORKSPACE_ROOT/Yue-Benchmark
+# Override with: YUE_BENCHMARK_ROOT=/path/to/Yue-Benchmark
+YUE_BENCHMARK_ROOT="${YUE_BENCHMARK_ROOT:-${WORKSPACE_ROOT}/Yue-Benchmark}"
 
 # Training params
 PER_DEVICE_TRAIN_BATCH_SIZE=1
@@ -823,7 +863,7 @@ run_lm_eval () {
   export HF_HUB_ENABLE_HF_TRANSFER=0
   export HF_DATASETS_OFFLINE=0
   export HF_DATASETS_TRUST_REMOTE_CODE=1
-  export HF_DATASETS_CACHE=${HF_DATASETS_CACHE:-/data/chenhang/hf_cache_eval}
+  export HF_DATASETS_CACHE=${HF_DATASETS_CACHE:-${WORKSPACE_ROOT}/hf_cache_eval}
   mkdir -p "$HF_DATASETS_CACHE"
 
   local tmp_out=$(mktemp)
@@ -1327,7 +1367,7 @@ if [ "$RUN_STEP3" = true ]; then
       done  # LR_FIXED loop end
     done  # ALPHA_FIXED loop end
 
-    export HF_DATASETS_CACHE=/data/chenhang/hf_cache
+    export HF_DATASETS_CACHE=${HF_DATASETS_CACHE:-${WORKSPACE_ROOT}/hf_cache}
     
     ###########################################################
     # Evaluate source model modelA (baseline) - executed once per task

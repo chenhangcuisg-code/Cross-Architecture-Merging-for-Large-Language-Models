@@ -6,6 +6,19 @@ CMMLU Cantonese Prediction Generation Script
 
 This script generates predictions for CMMLU (Chinese Multi-task Language
 Understanding) benchmark in Cantonese using a trained model.
+
+This script is part of the evaluation utilities for Cross-Architecture Merging.
+It works with the Yue-Benchmark repository: https://github.com/jiangjyjy/Yue-Benchmark
+
+The generated predictions can be evaluated using evaluate_cmmlu_yue.py.
+
+Usage:
+    python generate_cmmlu_predictions.py \\
+        --model_path <model_path> \\
+        --data_dir <yue_benchmark_data_dir> \\
+        --output_dir <output_dir> \\
+        --num_shots 0 \\
+        --device cuda:0
 """
 
 import json

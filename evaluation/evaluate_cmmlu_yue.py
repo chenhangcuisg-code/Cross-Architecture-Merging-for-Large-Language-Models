@@ -7,6 +7,16 @@ CMMLU Cantonese Evaluation Script
 This script evaluates model predictions for the CMMLU (Chinese Multi-task Language
 Understanding) benchmark in Cantonese. It processes prediction files, calculates
 accuracies, and generates CSV and JSON output files for analysis.
+
+This script is part of the evaluation utilities for Cross-Architecture Merging.
+It works with the Yue-Benchmark repository: https://github.com/jiangjyjy/Yue-Benchmark
+
+Usage:
+    python evaluate_cmmlu_yue.py --predictions_dir <predictions_dir> --output_dir <output_dir>
+
+Requirements:
+    - Levenshtein: pip install python-Levenshtein
+    - tqdm: pip install tqdm
 """
 
 import json

@@ -1,12 +1,11 @@
 # Cross-Architecture Merging for Large Language Models
 
-This repository contains the implementation of hierarchical optimal transport for transferring knowledge between neural network models, particularly for multilingual and multimodal scenarios.
+This repository contains the implementation of Cross-Architecture Merging for Large Language Models.
 
 ## Overview
 
-The code implements a hierarchical optimal transport framework that enables knowledge transfer between models through:
 1. **Activation Extraction**: Extracting activations from source and target models
-2. **Transport Plan Computation**: Computing hierarchical transport plans (P and Q matrices) using Sinkhorn algorithm
+2. **Transport Plan Computation**: Computing transport plans (P and Q matrices) using Sinkhorn algorithm
 3. **Model Fusion**: Fusing knowledge from source model to target model using computed transport plans
 4. **Training**: Fine-tuning the fused model with transport-based residual connections
 
@@ -55,8 +54,8 @@ To reproduce the paper results for the six tasks (medical, thai, finance, canton
 - **MODELS_ROOT**: Base/fused model directory (default: `$WORKSPACE_ROOT/models`).
 - **TRANSPORT_RESULTS_ROOT**: Transport plan output directory (default: `$WORKSPACE_ROOT/transport_results`).
 - **LM_EVAL_REPO**: Path to [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) (default: `$WORKSPACE_ROOT/lm-evaluation-harness`).
-- **MALAY_REPO**: Path to [MalayMMLU](https://github.com/mesolitica/malay-dataset) evaluation repo (default: `$WORKSPACE_ROOT/MalayMMLU`).
-- **YUE_BENCHMARK_ROOT**: Path to Yue-Benchmark (CMMLU data/scripts) (default: `$WORKSPACE_ROOT/Yue-Benchmark`).
+- **MALAY_REPO**: Path to [MalayMMLU](https://github.com/UMxYTL-AI-Labs/MalayMMLU) evaluation repo (default: `$WORKSPACE_ROOT/MalayMMLU`).
+- **YUE_BENCHMARK_ROOT**: Path to [Yue-Benchmark](https://github.com/jiangjyjy/Yue-Benchmark) (CMMLU data/scripts) (default: `$WORKSPACE_ROOT/Yue-Benchmark`).
 
 Place `run_activs_and_hot.py` at `WORKSPACE_ROOT` (same repo or symlink). Then run from the repo root:
 
