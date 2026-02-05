@@ -922,7 +922,7 @@ run_cmmlu_eval () {
     --dtype float16 \
     --max_new_tokens 512 || {
     echo "[WARN] CMMLU prediction failed"
-    cd /home/chenhang/optimal_trans
+    cd "${WORKSPACE_ROOT}"
     conda activate trans_opt
     return
   }
