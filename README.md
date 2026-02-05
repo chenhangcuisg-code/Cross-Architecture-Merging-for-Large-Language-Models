@@ -4,7 +4,6 @@ This repository contains the implementation of Cross-Architecture Merging for La
 
 ## Overview
 
-The code implements a hierarchical optimal transport framework that enables knowledge transfer between models through:
 1. **Activation Extraction**: Extracting activations from source and target models
 2. **Transport Plan Computation**: Computing transport plans (P and Q matrices) using Sinkhorn algorithm
 3. **Model Fusion**: Fusing knowledge from source model to target model using computed transport plans
