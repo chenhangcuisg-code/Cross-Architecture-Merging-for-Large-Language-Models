@@ -67,7 +67,7 @@ from dataset_hot_texts import (
     build_cantonese_dialogue_dataset,
     build_cantonese_cot_dataset,
 )
-from dataset_gsm8k import load_gsm8k_texts
+from data_loading.dataset_gsm8k import load_gsm8k_texts
 from datasets import Dataset
 
 

@@ -9,9 +9,11 @@
 
 ### 方法 1: 使用提供的脚本（推荐）
 
+在仓库根目录下执行（请先设置环境变量，不要将 token 写入脚本）：
+
 ```bash
-cd /home/chenhang/optimal_trans/submission
-bash setup_github.sh
+cd /path/to/Cross-Architecture-Merging-for-Large-Language-Models   # 进入本仓库根目录
+GITHUB_USERNAME=你的GitHub用户名 GITHUB_TOKEN=你的token bash setup_github.sh
 ```
 
 然后按照脚本输出的提示操作。
@@ -20,7 +22,7 @@ bash setup_github.sh
 
 1. **初始化 Git 仓库**（如果还没有）：
 ```bash
-cd /home/chenhang/optimal_trans/submission
+cd /path/to/Cross-Architecture-Merging-for-Large-Language-Models
 git init
 ```
 
@@ -41,7 +43,7 @@ git commit -m "Initial commit: Cross-Architecture Merging for Large Language Mod
    - 选择 Public 或 Private
    - **不要**初始化 README、.gitignore 或 license（我们已经有了）
 
-5. **添加远程仓库并推送**：
+5. **添加远程仓库并推送**（将 `YOUR_USERNAME` 替换为你的 GitHub 用户名）：
 ```bash
 git remote add origin https://github.com/YOUR_USERNAME/Cross-Architecture-Merging-for-Large-Language-Models.git
 git branch -M main

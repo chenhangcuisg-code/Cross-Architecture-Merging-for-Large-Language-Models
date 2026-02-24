@@ -56,6 +56,14 @@ def load_general_english_texts(subset="indonesian", split="train", max_samples=2
         )
         streaming = True
 
+    elif subset == "cantonese":
+        ds = load_dataset(
+            "jed351/cantonese-wikipedia",
+            split=split,
+            streaming=True,
+        )
+        streaming = True
+
     else:
         raise ValueError(f"Unknown subset: {subset}")
 

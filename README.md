@@ -13,11 +13,18 @@ This repository contains the implementation of Cross-Architecture Merging for La
 
 ```
 .
+├── run_activs_and_hot.py    # Step 1: activation extraction + transport plan computation
+├── generate_hot_residual.py # Step 2: model fusion (invoked from repo root by run_train_final.sh)
+├── train_hot_residual_sft.py # Step 3: training script (invoked from repo root)
+├── dataset_hot_texts.py     # Text dataset loading for run_activs_and_hot (malay, medical, gsm8k, etc.)
+├── activs_llama3_modules.py # LLaMA-3 activation extraction
+├── activs_qwen2_modules.py  # Qwen2 activation extraction
 ├── core/                    # Core algorithm implementations
 │   ├── hot_transport.py     # Transport plan computation (Sinkhorn, correlation distance)
+│   ├── hot_transport_chunk.py # Chunked stable HOT (compute_P_stable, used by run_activs_and_hot)
 │   ├── generate_hot_residual.py  # Transport-based residual generation and model fusion
 │   └── train_hot_residual_sft.py # Training script with transport-based residual support
-├── datasets/                # Dataset loading utilities
+├── data_loading/            # Dataset loading utilities (avoids shadowing HF 'datasets')
 │   ├── dataset_general_texts.py
 │   └── dataset_gsm8k.py
 ├── scripts/                 # Scripts
@@ -57,7 +64,7 @@ To reproduce the paper results for the six tasks (medical, thai, finance, canton
 - **MALAY_REPO**: Path to [MalayMMLU](https://github.com/UMxYTL-AI-Labs/MalayMMLU) evaluation repo (default: `$WORKSPACE_ROOT/MalayMMLU`).
 - **YUE_BENCHMARK_ROOT**: Path to [Yue-Benchmark](https://github.com/jiangjyjy/Yue-Benchmark) (CMMLU data/scripts) (default: `$WORKSPACE_ROOT/Yue-Benchmark`).
 
-Place `run_activs_and_hot.py` at `WORKSPACE_ROOT` (same repo or symlink). Then run from the repo root:
+`run_activs_and_hot.py` and its dependencies are included at the repo root. From the repo root, run:
 
 ```bash
 cd scripts && bash run_train_final.sh

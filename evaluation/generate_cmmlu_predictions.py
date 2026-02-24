@@ -194,6 +194,7 @@ def generate_predictions(
     os.makedirs(output_dir, exist_ok=True)
     
     # Generate predictions for each subject
+    oom_skip_count = 0
     for subject, items in data.items():
         print(f"\nProcessing subject: {subject} ({len(items)} items)")
         
@@ -249,13 +250,20 @@ def generate_predictions(
             
             # Format prompt
             prompt = format_prompt(question, choices, num_shots=num_shots, few_shot_examples=current_few_shot)
+            item_id = item.get('no', item.get('id', item.get('question_id', str(idx))))
             
-            # Generate prediction
-            prediction = generate_answer(model, tokenizer, prompt, device, max_new_tokens)
+            # Generate prediction (skip and count on OOM)
+            try:
+                prediction = generate_answer(model, tokenizer, prompt, device, max_new_tokens)
+            except (torch.cuda.OutOfMemoryError, RuntimeError) as e:
+                if "out of memory" in str(e).lower() or "OutOfMemoryError" in type(e).__name__:
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                    oom_skip_count += 1
+                    continue  # skip current sample, leave output empty
+                raise
             
             # Save results
-            # Use no field as ID, use index if not present
-            item_id = item.get('no', item.get('id', item.get('question_id', str(idx))))
             predictions[str(item_id)] = {
                 'prediction': prediction,
                 'gold': gold,
@@ -271,6 +279,8 @@ def generate_predictions(
         
         print(f"Saved predictions to: {output_file} ({len(predictions)} items)")
     
+    if oom_skip_count > 0:
+        print(f"\n[OOM] Skipped {oom_skip_count} samples, output left empty")
     print(f"\nAll predictions saved to: {output_dir}")
 
 
