@@ -57,6 +57,22 @@ git push -u origin main
 - ✅ README.md 已更新为正确的标题和结构
 - ⚠️ 如果需要，可以添加 LICENSE 文件
 
+## 推送（需在本机执行）
+
+若在无交互环境提交后尚未推送，请在本机进入仓库根目录执行（将 `YOUR_USERNAME` 和 `YOUR_TOKEN` 替换为你的 GitHub 用户名与 Personal Access Token）：
+
+```bash
+cd /path/to/Cross-Architecture-Merging-for-Large-Language-Models
+git push https://YOUR_USERNAME:YOUR_TOKEN@github.com/YOUR_USERNAME/Cross-Architecture-Merging-for-Large-Language-Models.git main
+```
+
+或先配置 remote 再推送（Token 仅用于本次，不要提交到仓库）：
+
+```bash
+git remote set-url origin https://YOUR_USERNAME:YOUR_TOKEN@github.com/YOUR_USERNAME/Cross-Architecture-Merging-for-Large-Language-Models.git
+git push -u origin main
+```
+
 ## 验证
 
 上传后，请检查：
