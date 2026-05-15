@@ -2,6 +2,8 @@
 
 This repository contains the implementation of Cross-Architecture Merging for Large Language Models.
 
+**Quick links**: [MODELS.md](MODELS.md) — every Hugging Face repo used (1B donor × 8B base, all 6 tasks) with their α / lr / dataset. [REPRODUCE.md](REPRODUCE.md) — end-to-end commands.
+
 ## Overview
 
 1. **Activation Extraction**: Extracting activations from source and target models
@@ -28,7 +30,8 @@ This repository contains the implementation of Cross-Architecture Merging for La
 │   ├── dataset_general_texts.py
 │   └── dataset_gsm8k.py
 ├── scripts/                 # Scripts
-│   ├── run_pipeline.sh      # Example end-to-end pipeline script
+│   ├── download_models.py   # Download every HF model used by the paper (see MODELS.md)
+│   ├── run_pipeline.sh      # Minimal end-to-end pipeline example (configurable via env vars)
 │   └── run_train_final.sh   # Full reproduction script (6 tasks: medical, thai, finance, cantonese, indonesian, malay)
 ├── evaluation/              # Evaluation utilities (code only, no large assets)
 │   ├── generate_cmmlu_predictions.py  # CMMLU prediction generation
@@ -55,25 +58,36 @@ pip install -r requirements.txt
 
 ## Full Reproduction (Paper Results)
 
-To reproduce the paper results for the six tasks (medical, thai, finance, cantonese, indonesian, malay), use the script in `scripts/run_train_final.sh`. It uses **default paths** that you can override via environment variables:
+Three-step reproduction. The per-task Hugging Face model IDs, α-fuse, α-train, lr and datasets are listed in [MODELS.md](MODELS.md); the end-to-end walk-through (including a single-task by-hand version) is in [REPRODUCE.md](REPRODUCE.md).
 
-- **WORKSPACE_ROOT**: Repository root (default: parent of `scripts/`). All relative paths are under this.
-- **MODELS_ROOT**: Base/fused model directory (default: `$WORKSPACE_ROOT/models`).
-- **TRANSPORT_RESULTS_ROOT**: Transport plan output directory (default: `$WORKSPACE_ROOT/transport_results`).
+```bash
+# 0. install
+pip install -r requirements.txt
+
+# 1. pull every model from HF (default: ./models)
+python scripts/download_models.py
+
+# 2. run all 6 paper tasks
+CUDA_VISIBLE_DEVICES=0,1,2,3 NUM_GPUS=4 bash scripts/run_train_final.sh
+```
+
+`run_train_final.sh` honours these env vars:
+
+- **WORKSPACE_ROOT**: Repository root (default: parent of `scripts/`).
+- **MODELS_ROOT**: Base/fused model directory (default: `$WORKSPACE_ROOT/models`, the destination of `download_models.py`).
+- **HOT_RESULTS_ROOT**: Transport plan output directory (default: `$WORKSPACE_ROOT/transport_results`).
 - **LM_EVAL_REPO**: Path to [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) (default: `$WORKSPACE_ROOT/lm-evaluation-harness`).
 - **MALAY_REPO**: Path to [MalayMMLU](https://github.com/UMxYTL-AI-Labs/MalayMMLU) evaluation repo (default: `$WORKSPACE_ROOT/MalayMMLU`).
 - **YUE_BENCHMARK_ROOT**: Path to [Yue-Benchmark](https://github.com/jiangjyjy/Yue-Benchmark) (CMMLU data/scripts) (default: `$WORKSPACE_ROOT/Yue-Benchmark`).
 
-`run_activs_and_hot.py` and its dependencies are included at the repo root. From the repo root, run:
+For a minimal demonstration with a single task (default: `malay`):
 
 ```bash
-cd scripts && bash run_train_final.sh
-```
-
-Or with custom paths:
-
-```bash
-WORKSPACE_ROOT=/path/to/repo MODELS_ROOT=/path/to/models bash scripts/run_train_final.sh
+bash scripts/run_pipeline.sh
+# or another task:
+MODEL_A=PathFinderKR/Llama-3-1B-Medical-Instruct MODEL_B=unsloth/Llama-3.1-8B-Instruct \
+DATA_SUBSET=medical ALPHA_FUSE=0.03 ALPHA_TRAIN=0.005 LR=3e-7 \
+DATASET_TYPE=medical_llama3 bash scripts/run_pipeline.sh
 ```
 
 ## Usage
@@ -135,6 +149,7 @@ python train_hot_residual_sft.py \
 ## Supported Models
 
 - **Text Models**: LLaMA-3, Qwen2, Qwen2.5
+- See [MODELS.md](MODELS.md) for the exact Hugging Face repo IDs used in the paper (1B donor × 8B base) and the paper-validated per-task α / lr.
 
 ## Supported Datasets
 
