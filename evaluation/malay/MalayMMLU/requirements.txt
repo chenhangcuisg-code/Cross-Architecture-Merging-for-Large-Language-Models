@@ -1,0 +1,11 @@
+accelerate
+appdirs
+loralib
+bitsandbytes
+black
+black[jupyter]
+datasets
+peft
+transformers
+sentencepiece
+gradio

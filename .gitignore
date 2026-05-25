@@ -76,7 +76,10 @@ models/
 hot_results/
 lm-evaluation-harness/
 MalayMMLU/
+!evaluation/malay/MalayMMLU/
+!evaluation/malay/MalayMMLU/**
 Yue-Benchmark/
+!evaluation/cantonese/**
 TinyLLaVA_Factory/
 
 # Temporary files
