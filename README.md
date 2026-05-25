@@ -33,9 +33,17 @@ This repository contains the implementation of Cross-Architecture Merging for La
 │   ├── download_models.py   # Download every HF model used by the paper (see MODELS.md)
 │   ├── run_pipeline.sh      # Minimal end-to-end pipeline example (configurable via env vars)
 │   └── run_train_final.sh   # Full reproduction script (6 tasks: medical, thai, finance, cantonese, indonesian, malay)
-├── evaluation/              # Evaluation utilities (code only, no large assets)
-│   ├── generate_cmmlu_predictions.py  # CMMLU prediction generation
-│   └── evaluate_cmmlu_yue.py           # CMMLU evaluation (Yue-MMLU)
+├── evaluation/              # Per-domain evaluation pipelines (code only, no large assets)
+│   ├── master/              # Top-level orchestration (eval_all_tasks.sh, run_source8b_eval.sh)
+│   ├── medical/             # MedQA + MMLU medical subsets (lm-evaluation-harness)
+│   ├── thai/                # XCOPA / XQuAD / XNLI Thai (lm-evaluation-harness)
+│   ├── finance/             # Finance lm-eval tasks + FinanceQA generative eval
+│   ├── indonesian/          # Indonesian lm-eval + bundled IndoMMLU pipeline
+│   ├── math/                # Arithmetic + Minerva math + MMLU elementary math
+│   ├── cantonese/           # CMMLU / Yue-MMLU prediction + aggregation
+│   ├── malay/               # Bundled MalayMMLU evaluator (code-only)
+│   ├── general_ability/     # arc_easy / commonsense_qa / piqa / social_iqa / winogrande
+│   └── utils/               # Result aggregation, baseline-vs-best comparison
 ├── requirements.txt         # Python dependencies
 └── README.md
 
