@@ -26,14 +26,14 @@ from safetensors.torch import load_file  # For loading *.safetensors
 # ==========================================
 # TinyLLaVA support (optional)
 # ==========================================
-from tinyllava.model import load_pretrained_model
-
 try:
     # Official tinyllava library, typically provides load_pretrained_model entry point
+    from tinyllava.model import load_pretrained_model  # noqa: F401
     from tinyllava.model import (  # type: ignore
         load_pretrained_model as tinyllava_load_pretrained_model,
     )
 except Exception:  # May not exist in environment tinyllava
+    load_pretrained_model = None  # type: ignore
     tinyllava_load_pretrained_model = None
 
 # ==========================================
